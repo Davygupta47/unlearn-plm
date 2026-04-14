@@ -5,3 +5,8 @@ wandb/
 __pycache__/
 *.pt
 *.safetensors
+output/
+wandb/
+tokenized_dataset/
+*.pt
+*.safetensors
