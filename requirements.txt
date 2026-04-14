@@ -1,0 +1,11 @@
+datasets
+evaluate
+matplotlib
+numpy
+pandas
+scikit_learn
+setuptools
+torch
+tqdm
+transformers
+wandb
