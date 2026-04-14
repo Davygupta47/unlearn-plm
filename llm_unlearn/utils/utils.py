@@ -251,5 +251,8 @@ def load_model_and_tokenizer(model_path_or_name, auto_device=False):
         trust_remote_code=True,
         model_max_length=4096,
     )
-    smart_tokenizer_and_embedding_resize(tokenizer, model)
+    if tokenizer.pad_token is None:
+      tokenizer.pad_token = tokenizer.eos_token
+    model.config.pad_token_id = tokenizer.pad_token_id
+#smart_tokenizer_and_embedding_resize(tokenizer, model)
     return model, tokenizer

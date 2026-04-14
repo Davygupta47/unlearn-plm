@@ -15,8 +15,9 @@ from tqdm import trange
 set_seed(42)
 
 #Config
-TOKENIZER_PATH = os.environ.get('TOKENIZER_PATH', '../../models/Qwen2-1.5B')
-MODEL_MAX_LENGTH = 512          # reduced from 4096 for free-tier RAM
+TOKENIZER_PATH = "Qwen/Qwen1.5-0.5B"
+print("Loading tokenizer from:", TOKENIZER_PATH)
+MODEL_MAX_LENGTH = 256          # reduced from 4096 for free-tier RAM
 BASE_SAVE = './tokenized_dataset'
 
 #Tokenizer
@@ -27,7 +28,7 @@ tokenizer = AutoTokenizer.from_pretrained(
     model_max_length=MODEL_MAX_LENGTH,
 )
 if tokenizer.pad_token is None:
-    tokenizer.add_special_tokens({'pad_token': '<pad>'})
+    tokenizer.pad_token = tokenizer.eos_token
 
 #Chunking + tokenize helper
 def chunk_and_tokenize(raw_dataset, max_len=MODEL_MAX_LENGTH, random_label=False):
@@ -57,6 +58,9 @@ def chunk_and_tokenize(raw_dataset, max_len=MODEL_MAX_LENGTH, random_label=False
 
     input_ids = torch.tensor(all_input_ids, dtype=torch.long)
     attn_mask = torch.tensor(all_attn,      dtype=torch.long)
+    #Critical fixes
+    # vocab_size = tokenizer.vocab_size
+    # input_ids = torch.clamp(input_ids, 0, vocab_size - 1)
     labels    = input_ids.clone()
 
     if random_label:
@@ -66,7 +70,7 @@ def chunk_and_tokenize(raw_dataset, max_len=MODEL_MAX_LENGTH, random_label=False
         for j in range(labels.shape[0]):
             for i in range(labels.shape[1]):
                 if labels[j, i].item() not in special:
-                    labels[j, i] = np.random.randint(0, vocab_size)
+                    labels[j, i] = np.random.randint(0, vocab_size - 1)
 
     # Mask padding in labels
     pad_mask = labels == tokenizer.pad_token_id

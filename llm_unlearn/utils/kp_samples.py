@@ -11,7 +11,7 @@ def load_model():
     global model
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(
-            "../../models/Yi-6B",
+            "../../models/Qwen1.5-0.5B",
             device_map="auto",
             torch_dtype=torch.bfloat16,
             trust_remote_code=True,

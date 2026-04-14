@@ -102,7 +102,7 @@ class DataTrainingArguments:
     dataset_config_name: Optional[str] = field(default=None)
 
 
-#  Domain → dataset path map 
+#  Domain to dataset path map 
 
 DOMAIN_PATHS = {
     "arxiv":     "arxiv/arxiv_forget_500",
@@ -231,8 +231,7 @@ def main():
         model, tokenizer = load_model_and_tokenizer(finetuned_path)
         train_dataset = torch.load(
             _get_dataset_path(domain, "normal"), weights_only=False)
-        unlearner = Trainer(model=model, train_dataset=train_dataset,
-                            tokenizer=tokenizer, **Trainer_args)
+        unlearner = Trainer(model=model, train_dataset=train_dataset,**Trainer_args)
 
     elif method == "random_label":
         model, tokenizer = load_model_and_tokenizer(finetuned_path)
@@ -248,8 +247,7 @@ def main():
         if data_args.max_train_samples:
             train_dataset = train_dataset.select(range(
                 min(len(train_dataset), data_args.max_train_samples)))
-        unlearner = Trainer(model=model, train_dataset=train_dataset,
-                            tokenizer=tokenizer, **Trainer_args)
+        unlearner = Trainer(model=model, train_dataset=train_dataset, **Trainer_args)
 
     elif method == "gradient_ascent":
         model, tokenizer = load_model_and_tokenizer(finetuned_path)
@@ -259,8 +257,7 @@ def main():
             train_dataset = train_dataset.select(range(
                 min(len(train_dataset), data_args.max_train_samples)))
         unlearner = GradientAscentTrainer(
-            model=model, train_dataset=train_dataset,
-            tokenizer=tokenizer, **Trainer_args)
+            model=model, train_dataset=train_dataset, **Trainer_args)
 
     elif method in ("ascent_plus_descent", "ascent_plus_kl_divergence"):
         model, tokenizer = load_model_and_tokenizer(finetuned_path)
@@ -273,7 +270,7 @@ def main():
 
         if method == "ascent_plus_descent":
             unlearner = AscentPlusDescentTrainer(
-                model=model, train_dataset=train_dataset, tokenizer=tokenizer,
+                model=model, train_dataset=train_dataset,
                 **Trainer_args,
                 data_collator=AscentPlusDescentDataCollator(tokenizer),
             )
@@ -286,7 +283,7 @@ def main():
                 finetuned_path, **params)
             unlearner = AscentPlusKLDivergenceTrainer(
                 pretrain_model=pretrained_model,
-                model=model, train_dataset=train_dataset, tokenizer=tokenizer,
+                model=model, train_dataset=train_dataset,
                 **Trainer_args,
                 data_collator=AscentPlusDescentDataCollator(tokenizer),
             )
@@ -296,6 +293,9 @@ def main():
     #Train 
     logger.info(f"Starting unlearning with method={method} on domain={domain}")
     t0 = time.time()
+    print("Model vocab:", model.config.vocab_size)
+    sample = train_dataset[0]["input_ids"]
+    print("Max token id:", max(sample))
     result = unlearner.train()
     elapsed = time.time() - t0
     h, rem = divmod(elapsed, 3600)
