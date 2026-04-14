@@ -1,68 +1,84 @@
+"""
+UnlearningArguments — extended TrainingArguments for LLM unlearning.
+Adds TOFU domain, all unlearning method flags, and free-tier compatibility.
+"""
 import os
-import token
 import transformers
-def is_torch_tpu_available(): return False
-from transformers import (
-    CONFIG_MAPPING,
-    MODEL_FOR_CAUSAL_LM_MAPPING,
-    AutoConfig,
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    HfArgumentParser,
-    Trainer,
-    TrainingArguments,
-    default_data_collator,
-    set_seed,
-)
-from transformers.utils import logging
-from transformers.modeling_utils import unwrap_model
-from transformers.models.auto.modeling_auto import MODEL_FOR_CAUSAL_LM_MAPPING_NAMES
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union
-from datasets import load_from_disk, concatenate_datasets
-from dataclasses import dataclass, field
-import math
-import numpy as np
-from llm_unlearn.utils import tokenize, smart_tokenizer_and_embedding_resize
+try:
+    from transformers import is_torch_tpu_available
+except ImportError:
+    def is_torch_tpu_available(): return False
 
-logger = logging.get_logger(__name__)
+from transformers import (
+    TrainingArguments,
+)
+from dataclasses import dataclass, field
+from typing import Optional
 
 
 @dataclass
 class UnlearningArguments(TrainingArguments):
-    do_unlearn: bool = field(default=False, metadata={
-                             "help": "Whether to run unlearning."})
-    do_unlearn_eval: bool = field(default=False, metadata={
-                                  "help": "Whether to run unlearning eval."})
-    unlearn_method: str = field(default="retrain", metadata={
-                                "help": "The method used to perform unlearning."})
+    do_unlearn: bool = field(
+        default=False, metadata={"help": "Whether to run unlearning."})
+    do_unlearn_eval: bool = field(
+        default=False, metadata={"help": "Whether to run unlearning eval."})
+
+
+    unlearn_method: str = field(
+        default="gradient_ascent",
+        metadata={
+            "help": (
+                "Unlearning method. One of: "
+                "gradient_ascent | random_label | ascent_plus_descent | "
+                "ascent_plus_kl_divergence | retrain | finetune"
+            )
+        },
+    )
+
     completely_random: bool = field(
-        default=False, metadata={"help": "Whether to use completely random."}
+        default=False,
+        metadata={"help": "Use completely random labels (ignores top_k/top_p)."},
     )
     top_k: int = field(
-        default=1e10, metadata={"help": "top k sample to generate random label"}
+        default=int(1e10),
+        metadata={"help": "Top-k sampling for adversarial label generation."},
     )
     top_p: float = field(
-        default=1.0, metadata={"help": "top p sample to generate random label"}
+        default=1.0,
+        metadata={"help": "Top-p sampling for adversarial label generation."},
     )
     use_soft_labels: bool = field(
         default=False,
-        metadata={"help": "Whether to use soft labels for training."}
+        metadata={"help": "Use soft (distribution) labels instead of hard random labels."},
     )
-    rm_groundtruth: bool=field(
+    rm_groundtruth: bool = field(
         default=False,
-        metadata={"help": "Whether to remove ground truth when sampling random labels."}
+        metadata={"help": "Remove ground-truth token when sampling adversarial labels."},
     )
-    unlearned_model_name_or_path: str =field(
-        default = None,
-        metadata={"help": "The unlearned model."}
+
+
+    domain: str = field(
+        default=None,
+        metadata={
+            "help": (
+                "Domain to unlearn. "
+                "Supported: arxiv | github | movielens | tofu"
+            )
+        },
     )
-    domain: str =field(
-        default = None,
-        metadata={"help": "The unlearned domain."}
-    )
-    general: bool=field(
+
+    general: bool = field(
         default=False,
-        metadata={"help": "Whether to use the general data when combining gradient ascent with descent or KL-divergence. \
-            Default to False which means to use the in-distribution data"}
+        metadata={
+            "help": (
+                "Use general (out-of-domain) retain data instead of in-domain retain data "
+                "for ascent_plus_descent / ascent_plus_kl_divergence. "
+                "Default=False → in-domain retain data."
+            )
+        },
     )
-    
+
+    unlearned_model_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to an already-unlearned model (for eval-only runs)."},
+    )
