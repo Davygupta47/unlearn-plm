@@ -53,8 +53,8 @@ training_args = TrainingArguments(
     logging_steps=5,
     save_strategy='epoch',
     save_total_limit=1,
-    fp16=False,
-    bf16=False,
+    fp16=(torch_dtype == torch.float32), # Use AMP fp16 for T4 (mixed precision) to speed up without crashes
+    bf16=(torch_dtype == torch.bfloat16),
     report_to='none',   # disable wandb for fine-tune step
     remove_unused_columns=True,
     dataloader_num_workers=0,
