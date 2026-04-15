@@ -1,12 +1,12 @@
 """
-Fine-tunes Qwen2-1.5B on the full TOFU dataset.
+Fine-tunes Qwen1.5-0.5B on the full TOFU dataset.
 Designed for single-GPU free-tier (T4 16 GB) — uses fp16, gradient checkpointing,
 small batch size + gradient accumulation.
 """
 import os, sys, torch
 from transformers import (
     AutoModelForCausalLM, AutoTokenizer,
-    Trainer, TrainingArguments, DataCollatorWithPadding,
+    Trainer, TrainingArguments,
     set_seed,
 )
 

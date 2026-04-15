@@ -11,3 +11,5 @@ tokenized_dataset/
 *.pt
 *.safetensors
 venv/
+implementation_plan.md
+download_tofu.py

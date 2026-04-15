@@ -1,8 +1,14 @@
 from transformers import TrainerCallback
-import wandb
+try:
+    import wandb
+except ImportError:
+    wandb = None
 import torch
 import random
-import evaluate
+try:
+    import evaluate
+except ImportError:
+    evaluate = None
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import numpy as np
@@ -25,6 +31,8 @@ def preprocess_logits_for_metrics(logits, labels):
 
 
 def compute_metrics(eval_preds):
+    if evaluate is None:
+        raise ImportError("The 'evaluate' package is required for compute_metrics. Install it with: pip install evaluate")
     metric = evaluate.load("accuracy")
     preds, labels = eval_preds
     # preds have the same shape as the labels, after the argmax(-1) has been calculated by preprocess_logits_for_metrics but we need to shift the labels!
@@ -46,6 +54,8 @@ class ModelParamsLoggingCallback(TrainerCallback):
 
     def on_log(self, args, state, control, model=None, **kwargs):
         # Log the L2 norm of the randomly selected parameters!
+        if wandb is None:
+            return
         for name, param in model.named_parameters():
             if name in self.selected_param_names:
                 wandb.log({f"{name}_l2_norm": torch.norm(param).item()})

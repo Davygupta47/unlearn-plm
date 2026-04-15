@@ -17,7 +17,6 @@ from dataclasses import dataclass, field
 from typing import Optional, Dict
 
 import torch
-from datasets import load_dataset
 
 try:
     from transformers import is_torch_tpu_available
@@ -27,7 +26,6 @@ except ImportError:
 import transformers
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
-    AutoConfig,
     AutoModelForCausalLM,
     AutoTokenizer,
     HfArgumentParser,
@@ -35,9 +33,14 @@ from transformers import (
     TrainingArguments,
     set_seed,
 )
-from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils.versions import require_version
-from transformers.trainer_pt_utils import _secs2timedelta
+try:
+    from transformers.trainer_pt_utils import _secs2timedelta
+except ImportError:
+    def _secs2timedelta(secs):
+        h, rem = divmod(int(secs), 3600)
+        m, s = divmod(rem, 60)
+        return f"{h:02d}:{m:02d}:{s:02d}"
 
 require_version("datasets>=1.8.0")
 logger = logging.getLogger(__name__)

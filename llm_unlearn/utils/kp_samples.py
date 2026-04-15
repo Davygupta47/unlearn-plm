@@ -7,13 +7,18 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = None
 
+def _model_dtype():
+    if torch.cuda.is_available() and torch.cuda.get_device_capability(0)[0] >= 8:
+        return torch.bfloat16
+    return torch.float32
+
 def load_model():
     global model
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(
             "../../models/Qwen1.5-0.5B",
             device_map="auto",
-            torch_dtype=torch.bfloat16,
+            torch_dtype=_model_dtype(),
             trust_remote_code=True,
         )
         model.eval()

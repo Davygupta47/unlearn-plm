@@ -27,7 +27,6 @@ except ImportError:
 import transformers
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
-    AutoConfig,
     AutoModelForCausalLM,
     AutoTokenizer,
     HfArgumentParser,
@@ -36,7 +35,13 @@ from transformers import (
     set_seed,
 )
 from transformers.utils.versions import require_version
-from transformers.trainer_pt_utils import _secs2timedelta
+try:
+    from transformers.trainer_pt_utils import _secs2timedelta
+except ImportError:
+    def _secs2timedelta(secs):
+        h, rem = divmod(int(secs), 3600)
+        m, s = divmod(rem, 60)
+        return f"{h:02d}:{m:02d}:{s:02d}"
 
 from llm_unlearn.utils import fig_fpr_tpr
 

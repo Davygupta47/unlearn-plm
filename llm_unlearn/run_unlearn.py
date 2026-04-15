@@ -2,7 +2,7 @@
 run_unlearn.py — LLM Unlearning entry point.
 Modified for:
   - TOFU dataset support (forget10 / retain90)
-  - Qwen2-1.5B compatibility
+  - Qwen1.5-0.5B compatibility
   - Kaggle / Colab free-tier (single T4, fp16, no FSDP required)
   - wandb optional (falls back to offline/disabled silently)
 """
@@ -152,6 +152,13 @@ def main():
 
     # Disable intermediate checkpoints to prevent disk space exhaustion (e.g. on Kaggle)
     training_args.save_strategy = "no"
+
+    # Enable AMP fp16 on T4 (pre-Ampere) for ~3x training speedup.
+    # Model weights stay in float32; Trainer handles mixed precision internally.
+    if not _supports_tf32():
+        training_args.fp16 = True
+    else:
+        training_args.bf16 = True
 
     # Build output path
     lr_str = "{:.1e}".format(training_args.learning_rate).replace("-0", "_").replace("-", "_")
@@ -310,7 +317,8 @@ def main():
     metrics["train_samples"] = len(unlearner.train_dataset)
     unlearner.log_metrics("train", metrics)
     unlearner.save_metrics("train", metrics)
-    unlearner.save_state()
+    # Note: save_state() intentionally omitted to avoid writing optimizer/scheduler
+    # state to disk, which can exhaust limited Kaggle/Colab storage.
     logger.info(f"Model saved to {training_args.output_dir}")
 
 
