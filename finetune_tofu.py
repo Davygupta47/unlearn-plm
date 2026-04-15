@@ -23,7 +23,7 @@ LR          = float(os.environ.get('LR', '2e-5'))
 print(f'Fine-tuning on TOFU full set → {OUTPUT_DIR}')
 
 # Load model
-torch_dtype = torch.bfloat16 if torch.cuda.is_available() and torch.cuda.get_device_capability(0)[0] >= 8 else torch.float16
+torch_dtype = torch.bfloat16 if torch.cuda.is_available() and torch.cuda.get_device_capability(0)[0] >= 8 else torch.float32
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_PATH,
     torch_dtype=torch_dtype,

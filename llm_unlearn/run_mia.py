@@ -128,7 +128,7 @@ def main():
     set_seed(training_args.seed)
 
     #Load model 
-    torch_dtype = torch.bfloat16 if _supports_tf32() else torch.float16
+    torch_dtype = torch.bfloat16 if _supports_tf32() else torch.float32
     model = AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         torch_dtype=torch_dtype,

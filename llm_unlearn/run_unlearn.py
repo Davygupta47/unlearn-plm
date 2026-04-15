@@ -276,7 +276,7 @@ def main():
             )
         else:  # ascent_plus_kl_divergence
             params = {
-                "torch_dtype": torch.bfloat16 if _supports_tf32() else torch.float16,
+                "torch_dtype": torch.bfloat16 if _supports_tf32() else torch.float32,
                 "trust_remote_code": True,
             }
             pretrained_model = AutoModelForCausalLM.from_pretrained(

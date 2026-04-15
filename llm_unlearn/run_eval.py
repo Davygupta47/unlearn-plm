@@ -138,7 +138,7 @@ def main():
     torch_dtype = (
         getattr(torch, model_args.torch_dtype)
         if model_args.torch_dtype and model_args.torch_dtype not in ["auto", None]
-        else (torch.bfloat16 if _supports_tf32() else torch.float16)
+        else (torch.bfloat16 if _supports_tf32() else torch.float32)
     )
     model = AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,

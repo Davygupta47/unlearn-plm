@@ -57,12 +57,8 @@ def load_model_and_tokenizer(model_path_or_name, auto_device=False):
     # (e.g., T4) and/or slightly different Transformers versions.
     # - pre-Ampere GPUs generally don't support bf16 well -> use fp16
     # - `use_flash_attention_2` isn't supported in all Transformers versions/models
-    torch_dtype = torch.float16
-    if torch.cuda.is_available():
-        major, _minor = torch.cuda.get_device_capability(0)
-        if major >= 8:
-            torch_dtype = torch.bfloat16
-
+    torch_dtype = torch.float32 # changed to address ValueError: Attempting to unscale FP16 gradients.
+    
     params = {
         "torch_dtype": torch_dtype,
         "trust_remote_code": True,
