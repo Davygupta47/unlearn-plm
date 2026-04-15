@@ -1,6 +1,6 @@
 output/
 models/
-tokenized_dataset/
+tokenized_datasets/
 wandb/
 __pycache__/
 *.pt
@@ -10,3 +10,4 @@ wandb/
 tokenized_dataset/
 *.pt
 *.safetensors
+venv/
