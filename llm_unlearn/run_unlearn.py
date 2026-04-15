@@ -150,6 +150,9 @@ def main():
 
     set_seed(training_args.seed)
 
+    # Disable intermediate checkpoints to prevent disk space exhaustion (e.g. on Kaggle)
+    training_args.save_strategy = "no"
+
     # Build output path
     lr_str = "{:.1e}".format(training_args.learning_rate).replace("-0", "_").replace("-", "_")
     path = model_args.model_name_or_path or model_args.target_model_name_or_path
