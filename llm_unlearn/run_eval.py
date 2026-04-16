@@ -204,11 +204,10 @@ def main():
         ppls, accs = [], []
         for lp, m, pm in zip(sel_lp, mask, pred_mask):
             lp_nonpad = lp[m]
-# this will be used in attempting to use a PyTorch-style .clone() method on a NumPy array, which requires .copy() instead lp_copy = lp.clone().
-            lp_copy = lp.copy()
+            lp_copy = lp.clone()  # FIX: changed from .copy() to .clone()
             lp_copy[~m] = 100.0
             kv = max(1, int(k * lp_nonpad.numel()))
-            topk = torch.topk(torch.tensor(lp_copy), kv, largest=False)
+            topk = torch.topk(lp_copy, kv, largest=False)  # FIX: removed torch.tensor() wrapper
             avg_lp = topk.values.mean()
             ppls.append(avg_lp)
             accs.append(pm[topk.indices].float().mean())
@@ -219,10 +218,15 @@ def main():
 
     def compute_metrics(eval_preds):
         preds, labels = eval_preds
+        
+        # FIX: Trainer converts to numpy arrays. Cast back to tensors.
+        preds = torch.as_tensor(preds)
+        labels = torch.as_tensor(labels)
+        
         half = preds.shape[1] // 2
         sel_lp = preds[:, :half]
         predicts = preds[:, half:]
-        labels_c = labels.copy()[:, 1:]
+        labels_c = labels.clone()[:, 1:]  # FIX: changed from .copy() to .clone()
         mask = labels_c != -100
         pred_mask = predicts == labels_c
         ppl, acc = compute_min_k_ppl_acc(sel_lp, mask, 1.0, pred_mask)
@@ -232,7 +236,6 @@ def main():
     trainer = CustomTrainer(
         model=model,
         args=training_args,
-#        tokenizer=tokenizer,
         compute_metrics=compute_metrics if not is_torch_tpu_available() else None,
         preprocess_logits_for_metrics=preprocess_logits_for_metrics if not is_torch_tpu_available() else None,
     )
