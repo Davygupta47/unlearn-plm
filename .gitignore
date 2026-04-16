@@ -13,3 +13,5 @@ tokenized_dataset/
 venv/
 implementation_plan.md
 download_tofu.py
+#results kept here secured
+glimpse.md
