@@ -225,7 +225,7 @@ def main():
     trainer = CustomTrainer(
         model=model,
         args=training_args,
-        tokenizer=tokenizer,
+#        tokenizer=tokenizer,
         compute_metrics=compute_metrics if not is_torch_tpu_available() else None,
         preprocess_logits_for_metrics=preprocess_logits_for_metrics if not is_torch_tpu_available() else None,
     )

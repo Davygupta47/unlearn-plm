@@ -204,7 +204,8 @@ def main():
         ppls, accs = [], []
         for lp, m, pm in zip(sel_lp, mask, pred_mask):
             lp_nonpad = lp[m]
-            lp_copy = lp.clone()
+# this will be used in attempting to use a PyTorch-style .clone() method on a NumPy array, which requires .copy() instead lp_copy = lp.clone().
+            lp_copy = lp.copy()
             lp_copy[~m] = 100.0
             kv = max(1, int(k * lp_nonpad.numel()))
             topk = torch.topk(torch.tensor(lp_copy), kv, largest=False)
@@ -231,7 +232,7 @@ def main():
     trainer = CustomTrainer(
         model=model,
         args=training_args,
-        tokenizer=tokenizer,
+#        tokenizer=tokenizer,
         compute_metrics=compute_metrics if not is_torch_tpu_available() else None,
         preprocess_logits_for_metrics=preprocess_logits_for_metrics if not is_torch_tpu_available() else None,
     )
