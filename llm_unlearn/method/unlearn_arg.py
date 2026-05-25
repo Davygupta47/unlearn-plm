@@ -23,7 +23,6 @@ class UnlearningArguments(TrainingArguments):
     do_unlearn_eval: bool = field(
         default=False, metadata={"help": "Whether to run unlearning eval."})
 
-
     unlearn_method: str = field(
         default="gradient_ascent",
         metadata={
@@ -56,7 +55,6 @@ class UnlearningArguments(TrainingArguments):
         metadata={"help": "Remove ground-truth token when sampling adversarial labels."},
     )
 
-
     domain: str = field(
         default=None,
         metadata={
@@ -81,4 +79,10 @@ class UnlearningArguments(TrainingArguments):
     unlearned_model_name_or_path: Optional[str] = field(
         default=None,
         metadata={"help": "Path to an already-unlearned model (for eval-only runs)."},
+    )
+
+    # Added hyperparameter to control anchoring tightly against reference weights
+    kl_weight: float = field(
+        default=1.0,
+        metadata={"help": "Weight coefficient for token-level KL divergence from the reference model."},
     )
