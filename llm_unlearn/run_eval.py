@@ -168,7 +168,18 @@ def main():
         retain_dataset = torch.load(
             f"{TOKENIZED_BASE}/tofu/tofu_retain/normal/tokenized_dataset.pt",
             weights_only=False)
-        dataset_dict = {"forget": forget_dataset, "retain": retain_dataset}
+        forget_perturbed_dataset = torch.load(
+            f"{TOKENIZED_BASE}/tofu/tofu_forget_perturbed/normal/tokenized_dataset.pt",
+            weights_only=False)
+        real_authors_dataset = torch.load(
+            f"{TOKENIZED_BASE}/tofu/real_authors/normal/tokenized_dataset.pt",
+            weights_only=False)
+        dataset_dict = {
+            "forget": forget_dataset, 
+            "retain": retain_dataset,
+            "forget_perturbed": forget_perturbed_dataset,
+            "real_authors": real_authors_dataset
+        }
     elif domain == "arxiv":
         forget_dataset = torch.load(
             f"{TOKENIZED_BASE}/arxiv/arxiv_forget_500/normal/tokenized_dataset.pt",
@@ -261,8 +272,50 @@ def main():
         print("\n===== Evaluation Summary =====")
         for split, m in summary.items():
             print(f"  [{split}]  ppl={m.get('perplexity', m.get('eval_ppl', '?')):.2f}  "
-                  f"loss={m.get('eval_loss', '?'):.4f}")
+                  f"loss={m.get('eval_loss', '?'):.4f}  acc={m.get('eval_acc', '?'):.2f}%")
         print("==============================\n")
+
+        # ROUGE Evaluation
+        try:
+            import evaluate
+            from datasets import load_dataset
+            from tqdm import tqdm
+            rouge = evaluate.load("rouge")
+            logger.info("*** ROUGE Evaluation (Generative) ***")
+            model.eval()
+
+            raw_splits = {
+                "forget": ("locuslab/TOFU", "forget10"),
+                "retain": ("locuslab/TOFU", "retain90"),
+                "forget_perturbed": ("locuslab/TOFU", "forget10_perturbed"),
+                "real_authors": ("locuslab/TOFU", "real_authors")
+            }
+
+            for split_name, (ds_path, ds_config) in raw_splits.items():
+                if split_name not in dataset_dict:
+                    continue
+                logger.info(f"Generating for {split_name}...")
+                raw_ds = load_dataset(ds_path, ds_config, split="train")
+                if data_args.max_eval_samples:
+                    raw_ds = raw_ds.select(range(min(len(raw_ds), data_args.max_eval_samples)))
+
+                preds, refs = [], []
+                for example in tqdm(raw_ds, desc=split_name):
+                    question = example["question"]
+                    answer = example["answer"]
+                    inputs = tokenizer(question + "\n", return_tensors="pt").to(model.device)
+                    with torch.no_grad():
+                        outputs = model.generate(
+                            **inputs, max_new_tokens=64, do_sample=False, pad_token_id=tokenizer.eos_token_id
+                        )
+                    pred_text = tokenizer.decode(outputs[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True)
+                    preds.append(pred_text.strip())
+                    refs.append(answer.strip())
+
+                rouge_results = rouge.compute(predictions=preds, references=refs)
+                print(f"  [{split_name} ROUGE] ROUGE-1: {rouge_results['rouge1']:.4f}, ROUGE-L: {rouge_results['rougeL']:.4f}")
+        except ImportError as e:
+            logger.warning(f"Could not compute ROUGE: {e}. Please install 'evaluate' and 'rouge_score'.")
 
 
 def _mp_fn(index):

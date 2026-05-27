@@ -10,3 +10,6 @@ torch
 tqdm
 transformers
 wandb
+peft
+rouge_score
+nltk

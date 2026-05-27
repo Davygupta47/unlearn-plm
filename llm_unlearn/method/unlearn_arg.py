@@ -86,3 +86,21 @@ class UnlearningArguments(TrainingArguments):
         default=1.0,
         metadata={"help": "Weight coefficient for token-level KL divergence from the reference model."},
     )
+
+    # LoRA arguments
+    use_lora: bool = field(
+        default=False,
+        metadata={"help": "Whether to use LoRA for parameter-efficient unlearning."},
+    )
+    lora_r: int = field(
+        default=8,
+        metadata={"help": "LoRA attention dimension."},
+    )
+    lora_alpha: int = field(
+        default=32,
+        metadata={"help": "LoRA alpha."},
+    )
+    lora_dropout: float = field(
+        default=0.05,
+        metadata={"help": "LoRA dropout."},
+    )

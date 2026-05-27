@@ -118,11 +118,15 @@ print('Loading TOFU dataset from HuggingFace ...')
 forget_raw  = load_dataset('locuslab/TOFU', 'forget10',  split='train')
 retain_raw  = load_dataset('locuslab/TOFU', 'retain90',  split='train')
 full_raw    = load_dataset('locuslab/TOFU', 'full',      split='train')
+forget_perturbed_raw = load_dataset('locuslab/TOFU', 'forget10_perturbed', split='train')
+real_authors_raw = load_dataset('locuslab/TOFU', 'real_authors', split='train')
 
 def to_text(ex): return {'text': ex['question'] + '\n' + ex['answer']}
 forget_raw = forget_raw.map(to_text)
 retain_raw = retain_raw.map(to_text)
 full_raw   = full_raw.map(to_text)
+forget_perturbed_raw = forget_perturbed_raw.map(to_text)
+real_authors_raw = real_authors_raw.map(to_text)
 
 print(f'forget={len(forget_raw)}  retain={len(retain_raw)}  full={len(full_raw)}')
 
@@ -143,6 +147,14 @@ save(retain_ds, f'{BASE_SAVE}/tofu/tofu_retain/normal/tokenized_dataset.pt')
 print('Tokenizing full set (normal) ...')
 full_ds = chunk_and_tokenize(full_raw)
 save(full_ds, f'{BASE_SAVE}/tofu/tofu_full/normal/tokenized_dataset.pt')
+
+print('Tokenizing forget perturbed set (normal) ...')
+forget_perturbed_ds = chunk_and_tokenize(forget_perturbed_raw)
+save(forget_perturbed_ds, f'{BASE_SAVE}/tofu/tofu_forget_perturbed/normal/tokenized_dataset.pt')
+
+print('Tokenizing real authors set (normal) ...')
+real_authors_ds = chunk_and_tokenize(real_authors_raw)
+save(real_authors_ds, f'{BASE_SAVE}/tofu/real_authors/normal/tokenized_dataset.pt')
 
 print('Tokenizing forget set (random_label) ...')
 forget_rl_ds = chunk_and_tokenize(forget_raw, random_label=True)

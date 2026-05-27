@@ -61,10 +61,16 @@ class AscentPlusKLDivergenceTrainer(Trainer):
 
         kl_per_token = kl_loss_fct(log_probs, ref_probs).sum(dim=-1)
         kl_per_token = kl_per_token * loss_mask # Zero-out masked positions
-        mean_kl_loss = kl_per_token.sum(dim=-1) / torch.clamp(valid_counts, min=1.0)
-        
+        # Only apply KL divergence on the retain set (factors > 0)
+        retain_mask = (factors > 0).float()
+        # If there are no retain samples in the batch, kl_loss is 0
+        if retain_mask.sum() > 0:
+            mean_kl_loss = (mean_kl_loss * retain_mask).sum() / retain_mask.sum()
+        else:
+            mean_kl_loss = 0.0
+            
         # Combine the task loss with our structural anchor constraint
-        total_loss = adjusted_ce_loss + (self.kl_weight * mean_kl_loss.mean())
+        total_loss = adjusted_ce_loss + (self.kl_weight * mean_kl_loss)
 
         return (total_loss, outputs) if return_outputs else total_loss
 
