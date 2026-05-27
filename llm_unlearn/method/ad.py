@@ -20,9 +20,9 @@ class AscentPlusDescentTrainer(Trainer):
             
         self.kl_weight = kl_weight
 
-    def compute_loss(self, model, inputs, return_outputs=False):
+    def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
         if "factor" not in inputs.keys():
-            return super().compute_loss(model, inputs, return_outputs)
+            return super().compute_loss(model, inputs, return_outputs, **kwargs)
             
         factors = inputs.pop("factor") 
         labels = inputs["labels"]
@@ -74,8 +74,8 @@ class AscentPlusDescentTrainer(Trainer):
         
         return (adjusted_loss, outputs) if return_outputs else adjusted_loss
 
-    def _get_train_sampler(self) -> Optional[torch.utils.data.Sampler]:
-        return SequentialSampler(self.train_dataset)
+    def _get_train_sampler(self, dataset: Optional[torch.utils.data.Dataset] = None) -> Optional[torch.utils.data.Sampler]:
+        return SequentialSampler(dataset if dataset is not None else self.train_dataset)
     
     def _set_signature_columns_if_needed(self):
         if self._signature_columns is None:

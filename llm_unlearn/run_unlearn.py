@@ -45,6 +45,7 @@ from llm_unlearn.method import (
 from llm_unlearn.utils import (
     load_model_and_tokenizer,
 )
+from llm_unlearn.utils.ad_tokenizer import AdvSupervisedDataset
 
 require_version("datasets>=1.8.0")
 
