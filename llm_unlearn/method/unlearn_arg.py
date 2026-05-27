@@ -83,8 +83,14 @@ class UnlearningArguments(TrainingArguments):
 
     # Added hyperparameter to control anchoring tightly against reference weights
     kl_weight: float = field(
-        default=1.0,
+        default=0.1,
         metadata={"help": "Weight coefficient for token-level KL divergence from the reference model."},
+    )
+
+    # Multiplier to amplify the gradient ascent (forget) CE loss term
+    ascent_weight: float = field(
+        default=3.0,
+        metadata={"help": "Multiplier for gradient ascent on forget samples. Higher = stronger forgetting."},
     )
 
     # LoRA arguments

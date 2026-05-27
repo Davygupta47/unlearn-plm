@@ -316,6 +316,8 @@ def main():
                 finetuned_path, **params)
             unlearner = AscentPlusKLDivergenceTrainer(
                 pretrain_model=pretrained_model,
+                kl_weight=training_args.kl_weight,
+                ascent_weight=training_args.ascent_weight,
                 model=model, train_dataset=train_dataset,
                 **Trainer_args,
                 data_collator=AscentPlusDescentDataCollator(tokenizer),

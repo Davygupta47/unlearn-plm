@@ -6,7 +6,7 @@ from typing import Optional
 import inspect
 
 class AscentPlusKLDivergenceTrainer(Trainer):
-    def __init__(self, pretrain_model=None, kl_weight: float = 1.0, **kwargs):
+    def __init__(self, pretrain_model=None, kl_weight: float = 1.0, ascent_weight: float = 1.0, **kwargs):
         super().__init__(**kwargs)
         device = self.accelerator.device
         if pretrain_model is not None:
@@ -16,6 +16,7 @@ class AscentPlusKLDivergenceTrainer(Trainer):
                 param.requires_grad = False
         self.pretrain_model = pretrain_model
         self.kl_weight = kl_weight
+        self.ascent_weight = ascent_weight
 
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
         if "factor" not in inputs.keys():
@@ -51,8 +52,14 @@ class AscentPlusKLDivergenceTrainer(Trainer):
         
         # Average cross entropy over the target tokens for each sequence in the batch
         ce_loss_per_seq = ce_per_token.sum(dim=-1) / torch.clamp(valid_counts, min=1.0)
-        # Apply the factors dynamically (+1 for regular descent, -1 for gradient ascent)
-        adjusted_ce_loss = (ce_loss_per_seq * factors).mean()
+        # Amplify the forget signal: for forget samples (factor<0), scale by ascent_weight
+        # Retain samples (factor>0) are left at their natural weight
+        weighted_factors = torch.where(
+            factors < 0,
+            self.ascent_weight * factors,
+            factors,
+        )
+        adjusted_ce_loss = (ce_loss_per_seq * weighted_factors).mean()
 
         # ---- PART B: Global Forward-KL Regularization Anchor ----
         kl_loss_fct = torch.nn.KLDivLoss(reduction="none")
