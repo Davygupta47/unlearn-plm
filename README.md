@@ -18,8 +18,11 @@ python finetune_tofu.py
 ```console(For Unlearning)
 python -m llm_unlearn.run_unlearn \
   --target_model_name_or_path ./output/tofu/Qwen1.5-0.5B/finetune \
-  --domain tofu --unlearn_method gradient_ascent \
-  --per_device_train_batch_size 1 --gradient_accumulation_steps 32 \
+  --domain tofu \
+  --unlearn_method ascent_plus_kl_divergence \
+  --use_lora \
+  --per_device_train_batch_size 1 \
+  --gradient_accumulation_steps 32 \
   --num_train_epochs 1 --learning_rate 1e-5 --output_dir ./output
 ```
 
