@@ -46,6 +46,23 @@ from llm_unlearn.utils import (
     load_model_and_tokenizer,
 )
 from llm_unlearn.utils.ad_tokenizer import AdvSupervisedDataset
+from peft import get_peft_model, LoraConfig, TaskType
+
+def apply_lora(model, training_args):
+    if not getattr(training_args, "use_lora", False):
+        return model
+    logger.info("Applying LoRA to the model...")
+    peft_config = LoraConfig(
+        task_type=TaskType.CAUSAL_LM,
+        inference_mode=False,
+        r=getattr(training_args, "lora_r", 8),
+        lora_alpha=getattr(training_args, "lora_alpha", 32),
+        lora_dropout=getattr(training_args, "lora_dropout", 0.05),
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+    )
+    model = get_peft_model(model, peft_config)
+    model.print_trainable_parameters()
+    return model
 
 require_version("datasets>=1.8.0")
 
@@ -234,18 +251,21 @@ def main():
     # Build unlearner
     if method == "retrain":
         model, tokenizer = load_model_and_tokenizer(pretrained_path)
+        model = apply_lora(model, training_args)
         train_dataset = torch.load(
             _get_dataset_path(domain, "normal"), weights_only=False)
         unlearner = Trainer(model=model, train_dataset=train_dataset, **Trainer_args)
 
     elif method == "finetune":
         model, tokenizer = load_model_and_tokenizer(finetuned_path)
+        model = apply_lora(model, training_args)
         train_dataset = torch.load(
             _get_dataset_path(domain, "normal"), weights_only=False)
         unlearner = Trainer(model=model, train_dataset=train_dataset,**Trainer_args)
 
     elif method == "random_label":
         model, tokenizer = load_model_and_tokenizer(finetuned_path)
+        model = apply_lora(model, training_args)
         if training_args.completely_random:
             ds_sub = "random_label/completely_random"
         else:
@@ -262,6 +282,7 @@ def main():
 
     elif method == "gradient_ascent":
         model, tokenizer = load_model_and_tokenizer(finetuned_path)
+        model = apply_lora(model, training_args)
         train_dataset = torch.load(
             _get_dataset_path(domain, "normal"), weights_only=False)
         if data_args.max_train_samples:
@@ -272,6 +293,7 @@ def main():
 
     elif method in ("ascent_plus_descent", "ascent_plus_kl_divergence"):
         model, tokenizer = load_model_and_tokenizer(finetuned_path)
+        model = apply_lora(model, training_args)
         ds_sub = "ascent_plus_descent_general" if training_args.general else "ascent_plus_descent"
         train_dataset = torch.load(
             _get_dataset_path(domain, ds_sub), weights_only=False)

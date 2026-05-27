@@ -28,14 +28,17 @@ python -m llm_unlearn.run_unlearn \
 
 ```console(For Evaluation)
 !python -m llm_unlearn.run_eval \
-  --model_name_or_path /content/unlearn-plm/output/tofu/finetune/1_gpu_bs_1_gas_32_lr_1.0e_5_epoch1/unlearn/gradient_ascent \
-  --domain tofu --do_eval --per_device_eval_batch_size 1 \
-  --output_dir ./output/tofu/eval
+  --model_name_or_path /content/unlearn-plm/output/tofu/finetune/1_gpu_bs_1_gas_32_lr_1.0e_5_epoch1/unlearn/ascent_plus_kl_divergence \
+  --domain tofu \
+  --do_eval \
+  --per_device_eval_batch_size 16
 ```
 
-```console(For Membership Inference Attack)
+```console(For MIA Evaluation)
 !python -m llm_unlearn.run_mia \
-  --model_name_or_path /content/unlearn-plm/output/tofu/finetune/1_gpu_bs_1_gas_32_lr_1.0e_5_epoch1/unlearn/gradient_ascent \
-  --domain tofu --do_eval --per_device_eval_batch_size 1 \
-  --output_dir ./output/tofu/mia
+  --model_name_or_path /content/unlearn-plm/output/tofu/finetune/1_gpu_bs_1_gas_32_lr_1.0e_5_epoch1/unlearn/ascent_plus_kl_divergence \
+  --domain tofu \
+  --do_eval \
+  --per_device_eval_batch_size 16 \
+  --output_dir ./output/mia/ascent_plus_kl_divergence
 ```

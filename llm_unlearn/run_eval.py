@@ -71,6 +71,7 @@ except Exception:
 @dataclass
 class ModelArguments:
     model_name_or_path: Optional[str] = field(default=None)
+    base_model_path: Optional[str] = field(default="./output/tofu/Qwen1.5-0.5B/finetune")
     trust_remote_code: bool = field(default=True)
     torch_dtype: Optional[str] = field(default=None, metadata={"choices": ["auto", "bfloat16", "float16", "float32"]})
     low_cpu_mem_usage: bool = field(default=False)
@@ -143,14 +144,23 @@ def main():
         if model_args.torch_dtype and model_args.torch_dtype not in ["auto", None]
         else (torch.bfloat16 if _supports_tf32() else torch.float32)
     )
+    is_peft = os.path.exists(os.path.join(model_args.model_name_or_path, "adapter_config.json"))
+    base_path = model_args.base_model_path if is_peft else model_args.model_name_or_path
+    
     model = AutoModelForCausalLM.from_pretrained(
-        model_args.model_name_or_path,
+        base_path,
         torch_dtype=torch_dtype,
         trust_remote_code=model_args.trust_remote_code,
         low_cpu_mem_usage=model_args.low_cpu_mem_usage,
     )
+    
+    if is_peft:
+        logger.info(f"Loading PEFT adapters from {model_args.model_name_or_path}")
+        from peft import PeftModel
+        model = PeftModel.from_pretrained(model, model_args.model_name_or_path)
+        model = model.merge_and_unload()
     tokenizer = AutoTokenizer.from_pretrained(
-        model_args.model_name_or_path,
+        base_path,
         padding_side="right",
         trust_remote_code=model_args.trust_remote_code,
     )
