@@ -1,0 +1,530 @@
+Loading tokenizer from: Qwen/Qwen1.5-0.5B
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading TOFU dataset from HuggingFace ...
+README.md: 100% 4.14k/4.14k [00:00<00:00, 13.1MB/s]
+forget10.json: 100% 115k/115k [00:00<00:00, 49.9MB/s]
+Generating train split: 100% 400/400 [00:00<00:00, 28722.21 examples/s]
+retain90.json: 100% 963k/963k [00:00<00:00, 54.9MB/s]
+Generating train split: 100% 3600/3600 [00:00<00:00, 479333.81 examples/s]
+full.json: 100% 1.08M/1.08M [00:00<00:00, 131MB/s]
+Generating train split: 100% 4000/4000 [00:00<00:00, 527519.05 examples/s]
+Map: 100% 400/400 [00:00<00:00, 19592.68 examples/s]
+Map: 100% 3600/3600 [00:00<00:00, 24439.01 examples/s]
+Map: 100% 4000/4000 [00:00<00:00, 25053.04 examples/s]
+forget=400  retain=3600  full=4000
+
+Tokenizing forget set (normal) ...
+  Saved 400 examples → ./tokenized_dataset/tofu/tofu_forget/normal/tokenized_dataset.pt
+Tokenizing retain set (normal) ...
+  Saved 3600 examples → ./tokenized_dataset/tofu/tofu_retain/normal/tokenized_dataset.pt
+Tokenizing full set (normal) ...
+  Saved 4000 examples → ./tokenized_dataset/tofu/tofu_full/normal/tokenized_dataset.pt
+Tokenizing forget set (random_label) ...
+  Saved 400 examples → ./tokenized_dataset/tofu/tofu_forget/random_label/completely_random/tokenized_dataset.pt
+Building ascent+descent dataset ...
+Building AdvDataset: 100% 400/400 [00:00<00:00, 730.72it/s]
+  Saved 800 examples → ascent_plus_descent
+
+All datasets tokenized and saved.
+
+==============================================================================================================================
+
+Fine-tuning on TOFU full set → ./output/tofu/Qwen1.5-0.5B/finetune
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights: 100% 291/291 [00:01<00:00, 161.62it/s, Materializing param=model.norm.weight]
+The tied weights mapping and config for this model specifies to tie model.embed_tokens.weight to lm_head.weight, but both are present in the checkpoints, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning
+Train samples: 4000
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+{'loss': '2.731', 'grad_norm': '23.34', 'learning_rate': '2e-05', 'epoch': '0.04'}
+{'loss': '2.291', 'grad_norm': '24.72', 'learning_rate': '1.992e-05', 'epoch': '0.08'}
+{'loss': '2.183', 'grad_norm': '14.9', 'learning_rate': '1.966e-05', 'epoch': '0.12'}
+{'loss': '2.071', 'grad_norm': '14.63', 'learning_rate': '1.925e-05', 'epoch': '0.16'}
+{'loss': '1.964', 'grad_norm': '11.83', 'learning_rate': '1.868e-05', 'epoch': '0.2'}
+{'loss': '1.861', 'grad_norm': '14.53', 'learning_rate': '1.797e-05', 'epoch': '0.24'}
+{'loss': '1.87', 'grad_norm': '12.4', 'learning_rate': '1.712e-05', 'epoch': '0.28'}
+{'loss': '1.897', 'grad_norm': '11.93', 'learning_rate': '1.615e-05', 'epoch': '0.32'}
+{'loss': '1.813', 'grad_norm': '15.85', 'learning_rate': '1.507e-05', 'epoch': '0.36'}
+{'loss': '1.796', 'grad_norm': '15.9', 'learning_rate': '1.392e-05', 'epoch': '0.4'}
+{'loss': '1.833', 'grad_norm': '12.57', 'learning_rate': '1.269e-05', 'epoch': '0.44'}
+{'loss': '1.803', 'grad_norm': '13.23', 'learning_rate': '1.142e-05', 'epoch': '0.48'}
+{'loss': '1.748', 'grad_norm': '11.29', 'learning_rate': '1.013e-05', 'epoch': '0.52'}
+{'loss': '1.768', 'grad_norm': '12.02', 'learning_rate': '8.834e-06', 'epoch': '0.56'}
+{'loss': '1.749', 'grad_norm': '15.06', 'learning_rate': '7.558e-06', 'epoch': '0.6'}
+{'loss': '1.759', 'grad_norm': '12.33', 'learning_rate': '6.324e-06', 'epoch': '0.64'}
+{'loss': '1.71', 'grad_norm': '13.2', 'learning_rate': '5.151e-06', 'epoch': '0.68'}
+{'loss': '1.744', 'grad_norm': '13.66', 'learning_rate': '4.059e-06', 'epoch': '0.72'}
+{'loss': '1.724', 'grad_norm': '12.35', 'learning_rate': '3.068e-06', 'epoch': '0.76'}
+{'loss': '1.727', 'grad_norm': '11.5', 'learning_rate': '2.193e-06', 'epoch': '0.8'}
+{'loss': '1.693', 'grad_norm': '11.05', 'learning_rate': '1.45e-06', 'epoch': '0.84'}
+{'loss': '1.618', 'grad_norm': '12.26', 'learning_rate': '8.505e-07', 'epoch': '0.88'}
+{'loss': '1.67', 'grad_norm': '10.4', 'learning_rate': '4.051e-07', 'epoch': '0.92'}
+{'loss': '1.673', 'grad_norm': '10.87', 'learning_rate': '1.211e-07', 'epoch': '0.96'}
+{'loss': '1.76', 'grad_norm': '14.46', 'learning_rate': '3.37e-09', 'epoch': '1'}
+100% 125/125 [08:11<00:00,  4.01s/it]
+Writing model shards:   0% 0/1 [00:00<?, ?it/s]
+Writing model shards: 100% 1/1 [00:42<00:00, 42.01s/it]
+{'train_runtime': '604.2', 'train_samples_per_second': '6.62', 'train_steps_per_second': '0.207', 'train_loss': '1.858', 'epoch': '1'}
+100% 125/125 [10:04<00:00,  4.83s/it]
+Writing model shards: 100% 1/1 [00:28<00:00, 28.23s/it]
+Fine-tuned model saved to ./output/tofu/Qwen1.5-0.5B/finetune
+
+========================================================================================================================================================
+
+Failed to load /usr/local/lib/python3.12/dist-packages/torchao/_C_cutlass_90a.abi3.so: Could not load this library: /usr/local/lib/python3.12/dist-packages/torchao/_C_cutlass_90a.abi3.so
+Failed to load /usr/local/lib/python3.12/dist-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so: Could not load this library: /usr/local/lib/python3.12/dist-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so
+wandb: WARNING The anonymous parameter to wandb.login() has no effect and will be removed in future versions.
+wandb: WARNING Unable to verify login in offline mode.
+wandb: Tracking run with wandb version 0.27.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /content/unlearn-plm/wandb/offline-run-20260527_124830-r9yc1mwi
+INFO:__main__:Method: ascent_plus_kl_divergence | Domain: tofu
+INFO:__main__:Output: ./output/tofu/finetune/1_gpu_bs_1_gas_32_lr_3.0e_5_epoch3/unlearn/ascent_plus_kl_divergence
+loading configuration file ./output/tofu/Qwen1.5-0.5B/finetune/config.json
+`torch_dtype` is deprecated! Use `dtype` instead!
+Model config Qwen2Config {
+  "architectures": [
+    "Qwen2ForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "dtype": "float32",
+  "eos_token_id": 151643,
+  "hidden_act": "silu",
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 2816,
+  "layer_types": [
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention"
+  ],
+  "max_position_embeddings": 32768,
+  "max_window_layers": 21,
+  "model_type": "qwen2",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_key_value_heads": 16,
+  "pad_token_id": null,
+  "rms_norm_eps": 1e-06,
+  "rope_parameters": {
+    "rope_theta": 1000000.0,
+    "rope_type": "default"
+  },
+  "sliding_window": null,
+  "tie_word_embeddings": true,
+  "transformers_version": "5.0.0",
+  "use_cache": false,
+  "use_sliding_window": false,
+  "vocab_size": 151936
+}
+
+loading weights file ./output/tofu/Qwen1.5-0.5B/finetune/model.safetensors
+Generate config GenerationConfig {
+  "bos_token_id": 151643,
+  "eos_token_id": 151643,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "use_cache": false
+}
+
+Loading weights: 100% 291/291 [00:00<00:00, 767.63it/s, Materializing param=model.norm.weight]
+The tied weights mapping and config for this model specifies to tie model.embed_tokens.weight to lm_head.weight, but both are present in the checkpoints, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning
+loading configuration file ./output/tofu/Qwen1.5-0.5B/finetune/generation_config.json
+Generate config GenerationConfig {
+  "bos_token_id": 151643,
+  "do_sample": false,
+  "eos_token_id": 151643,
+  "max_new_tokens": 2048
+}
+
+Could not locate the custom_generate/generate.py inside ./output/tofu/Qwen1.5-0.5B/finetune.
+loading configuration file ./output/tofu/Qwen1.5-0.5B/finetune/config.json
+Model config Qwen2Config {
+  "architectures": [
+    "Qwen2ForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "dtype": "float32",
+  "eos_token_id": 151643,
+  "hidden_act": "silu",
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 2816,
+  "layer_types": [
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention"
+  ],
+  "max_position_embeddings": 32768,
+  "max_window_layers": 21,
+  "model_type": "qwen2",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_key_value_heads": 16,
+  "pad_token_id": null,
+  "rms_norm_eps": 1e-06,
+  "rope_parameters": {
+    "rope_theta": 1000000.0,
+    "rope_type": "default"
+  },
+  "sliding_window": null,
+  "tie_word_embeddings": true,
+  "transformers_version": "5.0.0",
+  "use_cache": false,
+  "use_sliding_window": false,
+  "vocab_size": 151936
+}
+
+Could not locate the tokenizer configuration file, will try to use the model config instead.
+INFO:__main__:Applying LoRA to the model...
+trainable params: 3,784,704 || all params: 623,354,880 || trainable%: 0.6072
+loading configuration file ./output/tofu/Qwen1.5-0.5B/finetune/config.json
+Model config Qwen2Config {
+  "architectures": [
+    "Qwen2ForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "dtype": "float32",
+  "eos_token_id": 151643,
+  "hidden_act": "silu",
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 2816,
+  "layer_types": [
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention"
+  ],
+  "max_position_embeddings": 32768,
+  "max_window_layers": 21,
+  "model_type": "qwen2",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_key_value_heads": 16,
+  "pad_token_id": null,
+  "rms_norm_eps": 1e-06,
+  "rope_parameters": {
+    "rope_theta": 1000000.0,
+    "rope_type": "default"
+  },
+  "sliding_window": null,
+  "tie_word_embeddings": true,
+  "transformers_version": "5.0.0",
+  "use_cache": false,
+  "use_sliding_window": false,
+  "vocab_size": 151936
+}
+
+loading weights file ./output/tofu/Qwen1.5-0.5B/finetune/model.safetensors
+Generate config GenerationConfig {
+  "bos_token_id": 151643,
+  "eos_token_id": 151643,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "use_cache": false
+}
+
+Loading weights: 100% 291/291 [00:00<00:00, 783.73it/s, Materializing param=model.norm.weight]
+The tied weights mapping and config for this model specifies to tie model.embed_tokens.weight to lm_head.weight, but both are present in the checkpoints, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning
+loading configuration file ./output/tofu/Qwen1.5-0.5B/finetune/generation_config.json
+Generate config GenerationConfig {
+  "bos_token_id": 151643,
+  "do_sample": false,
+  "eos_token_id": 151643,
+  "max_new_tokens": 2048
+}
+
+Could not locate the custom_generate/generate.py inside ./output/tofu/Qwen1.5-0.5B/finetune.
+INFO:__main__:Starting unlearning with method=ascent_plus_kl_divergence on domain=tofu
+Model vocab: 151936
+Max token id: 151643
+***** Running training *****
+  Num examples = 800
+  Num Epochs = 3
+  Instantaneous batch size per device = 1
+  Total train batch size (w. parallel, distributed & accumulation) = 32
+  Gradient Accumulation steps = 32
+  Total optimization steps = 75
+  Number of trainable parameters = 3,784,704
+100% 75/75 [13:52<00:00, 11.06s/it]
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+{'train_runtime': '832.9', 'train_samples_per_second': '2.881', 'train_steps_per_second': '0.09', 'train_loss': '-56.21', 'epoch': '3'}
+100% 75/75 [13:52<00:00, 11.11s/it]
+INFO:__main__:Unlearning done in 0h 13m 53.3s
+Saving model checkpoint to ./output/tofu/finetune/1_gpu_bs_1_gas_32_lr_3.0e_5_epoch3/unlearn/ascent_plus_kl_divergence
+loading configuration file ./output/tofu/Qwen1.5-0.5B/finetune/config.json
+Model config Qwen2Config {
+  "architectures": [
+    "Qwen2ForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "dtype": "float32",
+  "eos_token_id": 151643,
+  "hidden_act": "silu",
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 2816,
+  "layer_types": [
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention",
+    "full_attention"
+  ],
+  "max_position_embeddings": 32768,
+  "max_window_layers": 21,
+  "model_type": "qwen2",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_key_value_heads": 16,
+  "pad_token_id": null,
+  "rms_norm_eps": 1e-06,
+  "rope_parameters": {
+    "rope_theta": 1000000.0,
+    "rope_type": "default"
+  },
+  "sliding_window": null,
+  "tie_word_embeddings": true,
+  "transformers_version": "5.0.0",
+  "use_cache": false,
+  "use_sliding_window": false,
+  "vocab_size": 151936
+}
+
+Saving Trainer.data_collator.tokenizer by default as Trainer.processing_class is `None`
+tokenizer config file saved in ./output/tofu/finetune/1_gpu_bs_1_gas_32_lr_3.0e_5_epoch3/unlearn/ascent_plus_kl_divergence/tokenizer_config.json
+***** train metrics *****
+  epoch                    =        3.0
+  total_flos               =  1605969GF
+  train_loss               =   -56.2107
+  train_runtime            = 0:13:52.91
+  train_samples            =        800
+  train_samples_per_second =      2.881
+  train_steps_per_second   =       0.09
+INFO:__main__:Model saved to ./output/tofu/finetune/1_gpu_bs_1_gas_32_lr_3.0e_5_epoch3/unlearn/ascent_plus_kl_divergence
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /content/unlearn-plm/wandb/offline-run-20260527_124830-r9yc1mwi
+wandb: Find logs at: wandb/offline-run-20260527_124830-r9yc1mwi/logs
+
+==================================================================================================================================================================
+
+Failed to load /usr/local/lib/python3.12/dist-packages/torchao/_C_cutlass_90a.abi3.so: Could not load this library: /usr/local/lib/python3.12/dist-packages/torchao/_C_cutlass_90a.abi3.so
+Failed to load /usr/local/lib/python3.12/dist-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so: Could not load this library: /usr/local/lib/python3.12/dist-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so
+wandb: WARNING The anonymous parameter to wandb.login() has no effect and will be removed in future versions.
+wandb: WARNING Unable to verify login in offline mode.
+wandb: Tracking run with wandb version 0.27.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /content/unlearn-plm/wandb/offline-run-20260527_130441-w2f1ks7g
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights: 100% 291/291 [00:00<00:00, 822.04it/s, Materializing param=model.norm.weight]
+The tied weights mapping and config for this model specifies to tie model.embed_tokens.weight to lm_head.weight, but both are present in the checkpoints, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning
+2026-05-27 13:04:43,556 - INFO - __main__ - Loading PEFT adapters from /content/unlearn-plm/output/tofu/finetune/1_gpu_bs_1_gas_32_lr_3.0e_5_epoch3/unlearn/ascent_plus_kl_divergence
+/usr/local/lib/python3.12/dist-packages/peft/tuners/tuners_utils.py:683: UserWarning: Input and output embeddings are no longer tied after merging. Setting `tie_word_embeddings=False` in the model config.
+  warnings.warn(
+2026-05-27 13:04:47,153 - INFO - __main__ - *** Evaluate ***
+100% 25/25 [00:31<00:00,  1.24s/it]
+***** forget_eval metrics *****
+  eval_acc                    =     63.461
+  eval_loss                   =     1.9723
+  eval_model_preparation_time =     0.0062
+  eval_ppl                    =     7.4417
+  eval_runtime                = 0:00:32.63
+  eval_samples                =        400
+  eval_samples_per_second     =     12.255
+  eval_steps_per_second       =      0.766
+  perplexity                  =     7.1868
+100% 225/225 [05:07<00:00,  1.37s/it]
+***** retain_eval metrics *****
+  eval_acc                    =    64.7134
+  eval_loss                   =     1.8396
+  eval_model_preparation_time =     0.0062
+  eval_ppl                    =     6.4894
+  eval_runtime                = 0:05:08.49
+  eval_samples                =       3600
+  eval_samples_per_second     =      11.67
+  eval_steps_per_second       =      0.729
+  perplexity                  =     6.2938
+
+===== Evaluation Summary =====
+  [forget]  ppl=7.19  loss=1.9723
+  [retain]  ppl=6.29  loss=1.8396
+==============================
+
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /content/unlearn-plm/wandb/offline-run-20260527_130441-w2f1ks7g
+wandb: Find logs at: wandb/offline-run-20260527_130441-w2f1ks7g/logs
+
+===================================================================================================================================================
+
+Failed to load /usr/local/lib/python3.12/dist-packages/torchao/_C_cutlass_90a.abi3.so: Could not load this library: /usr/local/lib/python3.12/dist-packages/torchao/_C_cutlass_90a.abi3.so
+Failed to load /usr/local/lib/python3.12/dist-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so: Could not load this library: /usr/local/lib/python3.12/dist-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so
+wandb: WARNING The anonymous parameter to wandb.login() has no effect and will be removed in future versions.
+wandb: WARNING Unable to verify login in offline mode.
+wandb: Tracking run with wandb version 0.27.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /content/unlearn-plm/wandb/offline-run-20260527_131241-flv20f0z
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights: 100% 291/291 [00:00<00:00, 772.50it/s, Materializing param=model.norm.weight]
+The tied weights mapping and config for this model specifies to tie model.embed_tokens.weight to lm_head.weight, but both are present in the checkpoints, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning
+INFO:__main__:Loading PEFT adapters from /content/unlearn-plm/output/tofu/finetune/1_gpu_bs_1_gas_32_lr_3.0e_5_epoch3/unlearn/ascent_plus_kl_divergence
+/usr/local/lib/python3.12/dist-packages/peft/tuners/tuners_utils.py:683: UserWarning: Input and output embeddings are no longer tied after merging. Setting `tie_word_embeddings=False` in the model config.
+  warnings.warn(
+INFO:__main__:*** Membership Inference Attack Evaluation ***
+100% 25/25 [00:28<00:00,  1.14s/it]
+100% 25/25 [00:28<00:00,  1.15s/it]
+output_dir ./output/mia/ascent_plus_kl_divergence
+Attack eval_min_30_value   AUC 0.6021, Accuracy 0.5925, TPR@5%FPR of 0.1225
+
+Attack eval_min_40_value   AUC 0.5974, Accuracy 0.5962, TPR@5%FPR of 0.1150
+
+Attack eval_min_50_value   AUC 0.5936, Accuracy 0.5938, TPR@5%FPR of 0.1200
+
+Attack eval_min_60_value   AUC 0.5892, Accuracy 0.5837, TPR@5%FPR of 0.1075
+
+Attack eval_min_100_value   AUC 0.5833, Accuracy 0.5825, TPR@5%FPR of 0.1175
+
+INFO:__main__:MIA results saved to ./output/mia/ascent_plus_kl_divergence/auc.txt and auc.png
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /content/unlearn-plm/wandb/offline-run-20260527_131241-flv20f0z
+wandb: Find logs at: wandb/offline-run-20260527_131241-flv20f0z/logs
+
+===========================================================================================================================
+
+
+=== /content/unlearn-plm/output/eval/ascent_plus_kl_divergence/all_results.json ===
+{
+  "eval_acc": 64.7134017944336,
+  "eval_loss": 1.8395683765411377,
+  "eval_model_preparation_time": 0.0062,
+  "eval_ppl": 6.489425182342529,
+  "eval_runtime": 308.4913,
+  "eval_samples": 3600,
+  "eval_samples_per_second": 11.67,
+  "eval_steps_per_second": 0.729,
+  "perplexity": 6.293821113837991
+}
+
+=== /content/unlearn-plm/output/eval/ascent_plus_kl_divergence/retain_eval_results.json ===
+{
+  "eval_acc": 64.7134017944336,
+  "eval_loss": 1.8395683765411377,
+  "eval_model_preparation_time": 0.0062,
+  "eval_ppl": 6.489425182342529,
+  "eval_runtime": 308.4913,
+  "eval_samples": 3600,
+  "eval_samples_per_second": 11.67,
+  "eval_steps_per_second": 0.729,
+  "perplexity": 6.293821113837991
+}
+
+=== /content/unlearn-plm/output/eval/ascent_plus_kl_divergence/forget_eval_results.json ===
+{
+  "eval_acc": 63.460994720458984,
+  "eval_loss": 1.9722506999969482,
+  "eval_model_preparation_time": 0.0062,
+  "eval_ppl": 7.441661357879639,
+  "eval_runtime": 32.6392,
+  "eval_samples": 400,
+  "eval_samples_per_second": 12.255,
+  "eval_steps_per_second": 0.766,
+  "perplexity": 7.186833705600897
+}
+
+=== MIA AUC ===
+eval_min_30_value   AUC 0.6021, Accuracy 0.5925, TPR@0.1%FPR of 0.1225
+eval_min_40_value   AUC 0.5974, Accuracy 0.5962, TPR@0.1%FPR of 0.1150
+eval_min_50_value   AUC 0.5936, Accuracy 0.5938, TPR@0.1%FPR of 0.1200
+eval_min_60_value   AUC 0.5892, Accuracy 0.5837, TPR@0.1%FPR of 0.1075
+eval_min_100_value   AUC 0.5833, Accuracy 0.5825, TPR@0.1%FPR of 0.1175
